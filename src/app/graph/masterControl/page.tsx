@@ -8,6 +8,10 @@ function masterControl() {
         <p className='text-black' >Users_List</p>
         <div className='bg-black text-white' >Exit</div>
       </div>
+      <div className='flex justify-between'>
+        <p className='text-black'>Name</p>
+        <p className='text-black'>Friends</p>
+      </div>
       <UserInfo/>
     </div>
   )
