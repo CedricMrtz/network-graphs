@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import ForceGraph from '../components/graphs';
+import Link from 'next/link';
 
 const data = {
   nodes: [
@@ -16,7 +17,7 @@ const data = {
   ]
 };
 
-export default function App() {
+export default function Home() {
   const [dimensions, setDimensions] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 928,
     height: typeof window !== "undefined" ? window.innerHeight : 680,
@@ -35,6 +36,8 @@ export default function App() {
 
   return (
     <div style={{ width: "100vw", height: "100vh", margin: 0, padding: 0 }} className='flex'>
+        <Link href={'/graph'} className='text-red-50 bg-amber-700' >AA</Link>
+
       <div className="">
         <ForceGraph data={data} height={dimensions.height} />
       </div>
