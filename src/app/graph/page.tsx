@@ -16,7 +16,7 @@ function Graph() {
           <img src='/add.svg' alt='Add' onClick={() => setOpen(true)}  className='size-12'/>
         </div>
         <div className="flex flex-col items-center justify-center min-h-screen py-2 border-radius-lg bg">
-          <h1 className="text-4xl font-bold text-center">
+          <h1 className="text-4xl font-bold text-center text-black">
             AAAAAAAAA
           </h1>
         </div>

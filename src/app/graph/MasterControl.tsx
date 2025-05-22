@@ -14,19 +14,21 @@ const MasterControl: React.FC<PageProps> = ({isOpen, onClose, children}) => {
 if(!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 flex justify-center items-center bg-black/50 z-50"
+    <div
+      className="fixed inset-0 flex bg-black/50 z-50"
       onClick={onClose}
+    >
+      <div
+        className="bg-white text-black p-20 h-full w-150 relative"
+        onClick={e => e.stopPropagation()}
       >
-      <div className='flex justify-between w-200 ' >
-        <p className='text-black text-4xl' >Users_List</p>
-        <div className='bg-black text-white rounded-3xl w-20 h-5'>Exit</div>
+        <img src="/cross.svg" alt="cross" 
+        className="absolute top-4 left-4 size-16 cursor-pointer"
+        onClick={onClose}
+        />
+        <UserInfo />
+        <UserInfo />
       </div>
-      <div className='flex justify-between w-200'>
-        <p className='text-black'>Name</p>
-        <p className='text-black'>Friends</p>
-      </div>
-      <UserInfo/>
     </div>
   )
 }
