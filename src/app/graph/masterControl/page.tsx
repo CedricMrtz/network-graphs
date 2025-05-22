@@ -1,7 +1,11 @@
 import React from 'react'
 import UserInfo from './userInfo'
 
+
 function masterControl() {
+
+
+
   return (
     <div className=''>
       <div className='flex justify-between w-200' >

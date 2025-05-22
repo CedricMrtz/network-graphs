@@ -24,7 +24,8 @@ export default function ForceGraph({ data, height = 680 }) {
 
     const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links).id(d => d.id))
-      .force("charge", d3.forceManyBody())
+      .force("charge", d3.forceManyBody().strength(-300))
+      .force("collide", d3.forceCollide().radius(40))
       .force("x", d3.forceX())
       .force("y", d3.forceY());
 
@@ -49,7 +50,7 @@ export default function ForceGraph({ data, height = 680 }) {
       .selectAll("circle")
       .data(nodes)
       .join("circle")
-      .attr("r", 5)
+      .attr("r", 25)
       .attr("fill", d => color(d.group));
 
     node.append("title")
