@@ -222,7 +222,7 @@ function Graph() {
         <MasterControl isOpen={isOpen2} onClose={() => setOpen2(false)} />
 
     </div>
-    </>
+    </div>
   )
 }
 
