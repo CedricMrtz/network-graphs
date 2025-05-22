@@ -1,12 +1,47 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import Link from 'next/link';
 import ForceGraph from '../../components/graphs';
+import MasterControl from './MasterControl';
+import AddUser from './AddUser';
+
 
 type Node = { id: string; group: number };
 type Link = { source: string; target: string; value: number };
 
 function Graph() {
+    const [isOpen, setOpen] = useState(false)
+  const [isOpen2, setOpen2] = useState(false)
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const dragStart = useRef({x:0, y:0})
+  const isDragging = useRef (false)
+
+  function onMouseDown(e: React.MouseEvent<HTMLDivElement>){
+    isDragging.current = true
+    dragStart.current = {
+      x: e.clientX - offset.x,
+      y: e.clientY - offset.y
+    }
+  }
+
+  function onMouseUp(){
+    isDragging.current = false
+  }
+
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!isDragging.current) return
+    setOffset({
+      x: e.clientX - dragStart.current.x,
+      y: e.clientY - dragStart.current.y
+    })
+  }
+
+  function Center(){
+    setOffset({x:0,y:0})
+  }
+
+
+  
   const [isLoading, setIsLoading] = useState(true);
   const [graphData, setGraphData] = useState<{ nodes: Node[]; links: Link[] }>({
     nodes: [],
@@ -40,12 +75,16 @@ function Graph() {
   }, []);
 
   return (
-    <div className='text-black'>
+    <div className='text-black w-screen h-screen relative'>
       <div className="flex justify-between gap-4 p-4">
-        <Link href={'/graph/masterControl'}>
-          <img src='/menu.svg' alt="Menu Icon" className='size-12'/>
-        </Link>
-      </div>
+            <img src='/menu.svg' alt="Menu Icon" onClick={() => setOpen2(true)} className='size-12'/>
+            <button
+            className='bg-amber-500'
+            onClick={(Center)}
+            >
+            Center
+            </button>
+            <img src='/add.svg' alt='Add' onClick={() => setOpen(true)}  className='size-12'/>
 
       <div className="p-4 flex gap-8">
         <form
@@ -169,10 +208,21 @@ function Graph() {
         </form>
       </div>
 
-      <div>
+        <div
+          className="w-screen h-screen overflow-hidden relative cursor-grab active:cursor-grabbing"
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseUp}
+        >
+
         <ForceGraph data={graphData} height={dimensions.height} />
       </div>
+              <AddUser isOpen={isOpen} onClose={() => setOpen(false)} />
+        <MasterControl isOpen={isOpen2} onClose={() => setOpen2(false)} />
+
     </div>
+    </>
   )
 }
 
