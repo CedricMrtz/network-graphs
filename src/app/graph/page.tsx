@@ -43,6 +43,7 @@ export default function Graph() {
   }, [])
 
   return (
+    
     <div className="text-black w-screen h-screen relative">
       <div className="flex justify-between p-4">
         <Link href="/graph/masterControl"><img src="/menu.svg" alt="Menu" className="size-12 cursor-pointer hover:scale-110"/></Link>
@@ -59,7 +60,7 @@ export default function Graph() {
         onMouseUp={onMouseUp}
         onMouseLeave={onMouseUp}
       >
-        <ForceGraph data={graphData} width={dimensions.width} height={dimensions.height} />
+        <ForceGraph data={graphData} width={dimensions.width} height={dimensions.height}   offset={offset} />
       </div>
     </div>
   )
