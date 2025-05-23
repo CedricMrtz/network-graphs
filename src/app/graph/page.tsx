@@ -1,229 +1,66 @@
 'use client'
-import React, { useEffect, useState, useRef} from 'react'
-import Link from 'next/link';
-import ForceGraph from '../../components/graphs';
-import MasterControl from './MasterControl';
-import AddUser from './AddUser';
+import React, { useEffect, useState, useRef } from 'react'
+import Link from 'next/link'
+import ForceGraph from '../../components/graphs'
+import MasterControl from './MasterControl'
+import AddUser from './AddUser'
 
+type Node = { id: string; group: number }
+type Link = { source: string; target: string; value: number }
 
-type Node = { id: string; group: number };
-type Link = { source: string; target: string; value: number };
-
-function Graph() {
-    const [isOpen, setOpen] = useState(false)
+export default function Graph() {
+  const [isOpen, setOpen] = useState(false)
   const [isOpen2, setOpen2] = useState(false)
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const dragStart = useRef({x:0, y:0})
-  const isDragging = useRef (false)
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const dragStart = useRef({ x: 0, y: 0 })
+  const isDragging = useRef(false)
 
-  function onMouseDown(e: React.MouseEvent<HTMLDivElement>){
+  function onMouseDown(e: React.MouseEvent<HTMLDivElement>) {
     isDragging.current = true
-    dragStart.current = {
-      x: e.clientX - offset.x,
-      y: e.clientY - offset.y
-    }
+    dragStart.current = { x: e.clientX - offset.x, y: e.clientY - offset.y }
   }
-
-  function onMouseUp(){
-    isDragging.current = false
-  }
-
+  function onMouseUp() { isDragging.current = false }
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (!isDragging.current) return
-    setOffset({
-      x: e.clientX - dragStart.current.x,
-      y: e.clientY - dragStart.current.y
+    setOffset({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y })
+  }
+  function Center() { setOffset({ x: 0, y: 0 }) }
+
+  const [graphData, setGraphData] = useState<{ nodes: Node[]; links: Link[] }>({ nodes: [], links: [] })
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  useEffect(() => {
+    if (!containerRef.current) return
+    const ro = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect
+        setDimensions({ width, height })
+      }
     })
-  }
-
-  function Center(){
-    setOffset({x:0,y:0})
-  }
-
-
-  
-  const [isLoading, setIsLoading] = useState(true);
-  const [graphData, setGraphData] = useState<{ nodes: Node[]; links: Link[] }>({
-    nodes: [],
-    links: []
-  });
-
-  const [dimensions, setDimensions] = useState({
-    width: typeof window !== "undefined" ? window.innerWidth : 928,
-    height: typeof window !== "undefined" ? window.innerHeight : 680,
-  });
-
-  // Form state
-  const [nodeId, setNodeId] = useState('');
-  const [nodeGroup, setNodeGroup] = useState(1);
-  const [linkValue, setLinkValue] = useState(1);
-  const [targetList, setTargetList] = useState<string[]>(['']);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    function handleResize() {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    ro.observe(containerRef.current)
+    return () => ro.disconnect()
+  }, [])
 
   return (
-    <div className='text-black w-screen h-screen relative'>
-      <div className="flex justify-between gap-4 p-4">
-            <img src='/menu.svg' alt="Menu Icon" onClick={() => setOpen2(true)} className='size-12'/>
-            <button
-            className='bg-amber-500'
-            onClick={(Center)}
-            >
-            Center
-            </button>
-            <img src='/add.svg' alt='Add' onClick={() => setOpen(true)}  className='size-12'/>
-
-      <div className="p-4 flex gap-8">
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            if (!nodeId) return;
-
-            setGraphData(prev => {
-              // build a set of existing node ids
-              const existing = new Set(prev.nodes.map(n => n.id));
-
-              // 1) add the main node if needed
-              const nodes: Node[] = existing.has(nodeId)
-                ? [...prev.nodes]
-                : [...prev.nodes, { id: nodeId, group: nodeGroup }];
-              existing.add(nodeId);
-
-              // 2) ensure each target exists as a node
-              targetList.forEach(t => {
-                if (t && !existing.has(t)) {
-                  nodes.push({ id: t, group: nodeGroup });
-                  existing.add(t);
-                }
-              });
-
-              // 3) add any new links
-              const links = [...prev.links];
-              targetList.forEach(t => {
-                if (
-                  t &&
-                  !prev.links.some(
-                    l =>
-                      l.source === nodeId &&
-                      l.target === t &&
-                      l.value === linkValue
-                  )
-                ) {
-                  links.push({ source: nodeId, target: t, value: linkValue });
-                }
-              });
-
-              return { ...prev, nodes, links };
-            });
-
-            // reset form
-            setNodeId('');
-            setNodeGroup(1);
-            setTargetList(['']);
-            setLinkValue(1);
-          }}
-          className="flex flex-col gap-4 w-full max-w-md"
-        >
-          <h2 className="font-bold">Add Node and Links</h2>
-          <input
-            type="text"
-            placeholder="Node ID"
-            value={nodeId}
-            onChange={e => setNodeId(e.target.value)}
-            className="border p-1"
-          />
-          <input
-            type="number"
-            placeholder="Group"
-            value={nodeGroup}
-            onChange={e => setNodeGroup(Number(e.target.value))}
-            className="border p-1"
-          />
-          <div className="flex flex-col gap-2">
-            <label className="font-semibold">Targets</label>
-            {targetList.map((target, idx) => (
-              <div key={idx} className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  placeholder={`Target ${idx + 1}`}
-                  value={target}
-                  onChange={e => {
-                    const newList = [...targetList];
-                    newList[idx] = e.target.value;
-                    setTargetList(newList);
-                  }}
-                  className="border p-1 flex-1"
-                />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setTargetList(list =>
-                      list.length === 1
-                        ? list
-                        : list.filter((_, i) => i !== idx)
-                    )
-                  }
-                  className="text-red-500 px-2"
-                  disabled={targetList.length === 1}
-                  title="Remove target"
-                >
-                  &times;
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => setTargetList(list => [...list, ''])}
-              className="bg-gray-200 px-2 py-1 rounded w-fit"
-            >
-              + Add Target
-            </button>
-          </div>
-          <input
-            type="number"
-            placeholder="Link Value"
-            value={linkValue}
-            onChange={e => setLinkValue(Number(e.target.value))}
-            className="border p-1"
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-2 py-1 rounded"
-          >
-            Add Node & Links
-          </button>
-        </form>
+    <div className="text-black w-screen h-screen relative">
+      <div className="flex justify-between p-4">
+        <Link href="/graph/masterControl"><img src="/menu.svg" alt="Menu" className="size-12 cursor-pointer hover:scale-110"/></Link>
+        <button onClick={Center} className="bg-black text-white px-3 py-1 rounded cursor-pointer hover:scale-110">Center</button>
+        <img src="/add.svg" alt="Add" onClick={() => setOpen(true)} className="size-12 cursor-pointer hover:scale-110"/>
       </div>
-
-        <div
-          className="w-screen h-screen overflow-hidden relative cursor-grab active:cursor-grabbing"
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseUp}
-        >
-
-        <ForceGraph data={graphData} height={dimensions.height} />
+      <AddUser isOpen={isOpen} onClose={() => setOpen(false)} setGraphData={setGraphData} />
+      <MasterControl isOpen={isOpen2} onClose={() => setOpen2(false)} />
+      <div
+        ref={containerRef}
+        className="w-full h-full overflow-hidden relative cursor-grab active:cursor-grabbing"
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+      >
+        <ForceGraph data={graphData} width={dimensions.width} height={dimensions.height} />
       </div>
-              <AddUser isOpen={isOpen} onClose={() => setOpen(false)} />
-        <MasterControl isOpen={isOpen2} onClose={() => setOpen2(false)} />
-
-    </div>
     </div>
   )
 }
-
-export default Graph

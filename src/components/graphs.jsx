@@ -2,18 +2,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 
-export default function ForceGraph({ data, height = 680 }) {
+export default function ForceGraph({ data, width, height }) {
   const ref = useRef();
-  const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 928);
     const nodeColors = useRef({});
-
-  useEffect(() => {
-    function handleResize() {
-      setWidth(window.innerWidth);
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     d3.select(ref.current).selectAll("*").remove();
