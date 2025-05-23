@@ -3,14 +3,21 @@
 import React from 'react'
 import UserInfo from '../../components/userInfo'
 
+type Node = { id: string; group: number }
+type Link = { source: string; target: string; value: number }
+
 type PageProps = {
   isOpen: boolean;
   onClose: () => void;
+  graphData: { nodes: Node[]; links: Link[] }
+  setGraphData?: React.Dispatch<
+    React.SetStateAction<{ nodes: Node[]; links: Link[] }>
+  >
   children?: React.ReactNode;
 };
 
 
-const MasterControl: React.FC<PageProps> = ({isOpen, onClose, children}) => {
+const MasterControl: React.FC<PageProps> = ({isOpen, onClose, graphData, setGraphData, children}) => {
 if(!isOpen) return null;
 
   return (
@@ -26,8 +33,14 @@ if(!isOpen) return null;
         className="absolute top-4 left-4 size-16 cursor-pointer"
         onClick={onClose}
         />
-        <UserInfo />
-        <UserInfo />
+        {graphData.nodes.map(node => (
+          <UserInfo 
+            key={node.id}
+            node={node}
+            graphData={graphData}
+            setGraphData={setGraphData}
+          />
+        ))}
       </div>
     </div>
   )

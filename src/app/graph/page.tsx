@@ -56,7 +56,7 @@ export default function Graph() {
       </div>
 
       <AddUser isOpen={isOpen} onClose={() => setOpen(false)} setGraphData={setGraphData} />
-      <MasterControl isOpen={isOpen2} onClose={() => setOpen2(false)} />
+      <MasterControl isOpen={isOpen2} onClose={() => setOpen2(false)} graphData={graphData} setGraphData={setGraphData}/>
       <div
         ref={containerRef}
         className="w-full h-full overflow-hidden relative cursor-grab active:cursor-grabbing"
