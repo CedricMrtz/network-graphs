@@ -26,7 +26,22 @@ export default function Graph() {
   }
   function Center() { setOffset({ x: 0, y: 0 }) }
 
-  const [graphData, setGraphData] = useState<{ nodes: Node[]; links: Link[] }>({ nodes: [], links: [] })
+  const [graphData, setGraphData] = useState<{ nodes: Node[]; links: Link[] }>({
+    nodes: [
+      { id: "Ruben", group: 1 },
+      { id: "Cedric", group: 1 },
+      { id: "Hiram", group: 1 },
+      { id: "Chemmah", group: 1 },
+      { id: "Enzo", group: 1 },
+    ],
+    links: [
+      { source: "Ruben", target: "Cedric", value: 1 },
+      { source: "Cedric", target: "Hiram", value: 1 },
+      { source: "Hiram", target: "Chemmah", value: 1 },
+      { source: "Chemmah", target: "Enzo", value: 1 },
+      { source: "Enzo", target: "Ruben", value: 1 },
+    ]
+  })
 
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
