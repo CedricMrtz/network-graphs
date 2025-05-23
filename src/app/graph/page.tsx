@@ -46,7 +46,10 @@ export default function Graph() {
     
     <div className="text-black w-screen h-screen relative">
       <div className="flex justify-between p-4">
-        <Link href="/graph/masterControl"><img src="/menu.svg" alt="Menu" className="size-12 cursor-pointer hover:scale-110"/></Link>
+        <img src="/menu.svg" alt="Menu"
+        className="size-12 cursor-pointer hover:scale-110"
+        onClick={() => setOpen2(true)}
+        />
         <button onClick={Center} className="bg-black text-white px-3 py-1 rounded cursor-pointer hover:scale-110">Center</button>
         <img src="/add.svg" alt="Add" onClick={() => setOpen(true)} className="size-12 cursor-pointer hover:scale-110"/>
       </div>
