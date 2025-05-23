@@ -11,7 +11,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
     const svg = d3.select(ref.current)
     svg.selectAll("*").remove()
 
-    // Set up zoom behavior
     const zoom = d3.zoom()
       .scaleExtent([0.1, 4])
       .on("zoom", (event) => {
@@ -19,13 +18,10 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       })
 
     svg.call(zoom)
-
-    // 1. Main group for all elements
     const gMain = svg.append("g")
       .attr("class", "pan-group")
       .attr("transform", `translate(${offset.x},${offset.y})`)
 
-    // 2. Define grid pattern
     const defs = svg.append("defs")
     const gridSize = 50
     const pattern = defs.append("pattern")
@@ -39,8 +35,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       .attr("fill", "none")
       .attr("stroke", "#717171")
       .attr("stroke-width", 1)
-
-    // 3. Infinite grid background
     const bigSize = Math.max(width, height) * 20
     gMain.append("rect")
       .attr("width", bigSize)
@@ -48,8 +42,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       .attr("x", -bigSize / 2)
       .attr("y", -bigSize / 2)
       .attr("fill", "url(#grid-pattern)")
-
-    // 4. Prepare data
     const palette = [
       "#706666", "#998D8D", "#302828", "#845151", "#4C4B70",
       "#7D9277", "#92AC8A", "#774A6D", "#54818B", "#44406C",
@@ -72,8 +64,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       })(),
       degree: linkCounts[d.id] || 0
     }))
-
-    // 5. Simulation
     const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links).id(d => d.id)
         .distance(d => {
@@ -86,17 +76,13 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       .force("collide", d3.forceCollide().radius(d => 25 + d.degree * 7))
       .force("x", d3.forceX())
       .force("y", d3.forceY())
-
-    // 6. Links
-    const link = gMain.append("g")
+     const link = gMain.append("g")
       .attr("stroke", "#999")
       .attr("stroke-opacity", 0.9)
       .selectAll("line")
       .data(links)
       .join("line")
       .attr("stroke-width", d => Math.sqrt(d.value || 0.1))
-
-    // 7. Nodes
     const node = gMain.append("g")
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5)
@@ -111,8 +97,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
         .on("end", dragended)
       )
     node.append("title").text(d => d.id)
-
-    // 8. Labels
     const label = gMain.append("g")
       .attr("font-family", "sans-serif")
       .attr("font-size", 12)
@@ -121,8 +105,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       .data(nodes)
       .join("text")
       .text(d => d.id)
-
-    // 9. SVG sizing
     svg
       .attr("width", width)
       .attr("height", height)
@@ -130,7 +112,6 @@ export default function ForceGraph({ data, width, height, offset = { x: 0, y: 0 
       .style("max-width", "100%")
       .style("height", "100%")
 
-    // 10. Tick
     simulation.on("tick", () => {
       link
         .attr("x1", d => d.source.x)

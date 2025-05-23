@@ -85,15 +85,6 @@ export default function AddUser({ isOpen, onClose, setGraphData }: AddUserProps)
           />
         </label>
 
-        <label className="block font-semibold mb-2">
-          Group
-          <input
-            type="number"
-            value={nodeGroup}
-            onChange={e => setNodeGroup(Number(e.target.value))}
-            className="bg-gray-300 p-2 mt-1 w-full rounded-2xl"
-          />
-        </label>
 
         <div className="block mb-2">
           <label className="font-semibold">Friends</label>
@@ -127,27 +118,18 @@ export default function AddUser({ isOpen, onClose, setGraphData }: AddUserProps)
           <button
             type="button"
             onClick={() => setTargetList(list => [...list, ''])}
-            className="mt-2 font-semibold bg-gray-200 px-3 py-1 rounded hover:scale-110 cursor-pointer"
+            className="mt-2 font-semibold bg-gray-200 px-3 py-1 rounded hover:scale-110 cursor-pointer transition"
           >
             + Add Friend
           </button>
         </div>
 
-        <label className="block mb-4 font-semibold">
-          Link Value
-          <input
-            type="number"
-            value={linkValue}
-            onChange={e => setLinkValue(Number(e.target.value))}
-            className="bg-gray-300 p-2 mt-1 w-full rounded-2xl"
-          />
-        </label>
 
         <div className="flex justify-center gap-2">
-          <button type="button" onClick={onClose} className="px-4 cursor-pointer py-2 hover:scale-110">
+          <button type="button" onClick={onClose} className="px-4 cursor-pointer py-2 hover:scale-110 transition">
             Cancel
           </button>
-          <button type="submit" className="bg-black text-white cursor-pointer px-4 py-2 rounded-3xl hover:scale-110">
+          <button type="submit" className="bg-black text-white cursor-pointer px-4 py-2 rounded-3xl hover:scale-110 transition">
             Add
           </button>
         </div>
