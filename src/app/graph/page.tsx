@@ -124,6 +124,12 @@ links: [
       >
         <ForceGraph data={graphData} width={dimensions.width} height={dimensions.height}   offset={offset} />
       </div>
+
+      <div className="fixed bottom-6 right-6 z-10">
+        <button className="bg-black text-white text-lg px-7 py-2 rounded-full cursor-pointer hover:scale-110 transition shadow-lg">
+          Track
+        </button>
+      </div>
     </div>
   )
 }
